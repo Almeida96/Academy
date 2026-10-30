@@ -1,0 +1,11 @@
+name: CI
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: cc -std=c11 -Wall -Wextra -Werror main.c -o academy
+      - run: python3 -m unittest discover -s test -v

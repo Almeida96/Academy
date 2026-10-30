@@ -1,0 +1,5 @@
+academy
+academy.exe
+*.obj
+*.log
+__pycache__/
