@@ -51,5 +51,14 @@ class AcademyTests(unittest.TestCase):
     def test_unknown_command_returns_failure(self):
         self.run_command("missing-command", succeeds=False)
 
+    def test_empty_journal_fields_are_rejected_without_writes(self):
+        for event in (b"student\t\t1\tExample\n", b"\tstudent\t1\tExample\n",
+                      b"student\t1\tExample\t\n"):
+            with self.subTest(event=event):
+                data = b"ACADEMY1\n" + event
+                self.db.write_bytes(data)
+                self.run_command("student", "2", "Another student", succeeds=False)
+                self.assertEqual(self.db.read_bytes(), data)
+
 if __name__ == "__main__":
     unittest.main()

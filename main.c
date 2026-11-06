@@ -101,8 +101,13 @@ static int load(const char *path, int *records) {
             fclose(file); return fail("Journal is truncated or exceeds its size limit.");
         }
         line[length - 1] = '\0';
-        part = strtok(line, "\t");
-        while (part && count < 8) { args[count++] = part; part = strtok(NULL, "\t"); }
+        part = line;
+        while (part && count < 8) {
+            char *separator = strchr(part, '\t');
+            args[count++] = part;
+            if (separator) *separator++ = '\0';
+            part = separator;
+        }
         if (part || !execute(count, args)) { fclose(file); return fail("Invalid journal event; restore a backup before continuing."); }
     }
     { int failed = ferror(file); fclose(file); return failed ? fail("Cannot read the journal.") : 1; }
